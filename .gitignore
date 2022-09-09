@@ -212,3 +212,6 @@ fabric.properties
 
 # Output files
 output_reports/
+
+# Jupyter notebook folder
+notebooks/
