@@ -9,15 +9,26 @@ from inverted_index import InvertedIndex
 
 class Indexer:
     """This class is intended to be used to parse text data."""
-    def __init__(self, dataset_path: str, dataset_name: str):
-        self.index = InvertedIndex()
+    def __init__(
+            self,
+            dataset_path: str,
+            dataset_name: str,
+            index: InvertedIndex
+    ) -> None:
+        """Initialize the Indexer instance.
+
+        :param dataset_path: The path to the dataset file
+        :param dataset_name: The name of the dataset
+        :param index: The inverted index that will be populated
+        """
+        self.index = index
         self.documents_processed = 0
         self.words_processed = 0
         self.dataset_name = dataset_name
 
         self.__load_data(dataset_path)
 
-    def __load_data(self, dataset_path: str):
+    def __load_data(self, dataset_path: str) -> None:
         """Load data from a text file.
 
         :param dataset_path: The path to the dataset file
@@ -41,7 +52,7 @@ class Indexer:
 
         print(f"Finished processing {self.dataset_name}\n")
 
-    def __process_line(self, document_id: int, line: str):
+    def __process_line(self, document_id: int, line: str) -> None:
         """Process a single line in a text file.
 
         :param document_id: The ID of the document being processed
@@ -67,7 +78,7 @@ class Indexer:
             self.index.add_word(document_id, processed_word)
 
     @staticmethod
-    def __process_word(word: str):
+    def __process_word(word: str) -> str:
         """Removes punctuation and converts a word to lowercase.
 
         :param word: The word to be processed
@@ -76,7 +87,7 @@ class Indexer:
         stripped_word = word.strip()
         return stripped_word.translate(str.maketrans('', '', string.punctuation)).lower()
 
-    def calculate_metrics(self):
+    def calculate_metrics(self) -> None:
         """Calculate metrics for reporting purposes."""
         unique_words = len(list(self.index.index.keys()))
 
@@ -85,7 +96,7 @@ class Indexer:
             file.write(f"Collection Size: {self.words_processed}\n")
             file.write(f"Vocabulary Size: {unique_words}\n")
 
-    def find_singleton_words(self):
+    def find_singleton_words(self) -> None:
         """Find words that only appear in the corpus once."""
         words = list(self.index.index.keys())
 
@@ -103,7 +114,7 @@ class Indexer:
             file.write("List of singletons:\n")
             file.writelines(", ".join(singletons))
 
-    def find_frequencies(self):
+    def find_frequencies(self) -> None:
         """Find the collection and document frequency of each word."""
         words = list(self.index.index.keys())
 
