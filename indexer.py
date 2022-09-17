@@ -7,21 +7,25 @@ import pandas as pd
 from inverted_index import InvertedIndex
 
 
-class Parser:
+class Indexer:
     """This class is intended to be used to parse text data."""
-    def __init__(self, document_path: str, dataset_name: str):
+    def __init__(self, dataset_path: str, dataset_name: str):
         self.index = InvertedIndex()
         self.documents_processed = 0
         self.words_processed = 0
         self.dataset_name = dataset_name
 
-        self._load_data(document_path)
+        self.__load_data(dataset_path)
 
-    def _load_data(self, document_path: str):
-        """Load data from a text file."""
+    def __load_data(self, dataset_path: str):
+        """Load data from a text file.
+
+        :param dataset_path: The path to the dataset file
+        :return: None
+        """
         print(f"Starting {self.dataset_name} processing...")
 
-        with open(document_path, "r") as file:
+        with open(dataset_path, "r") as file:
             document_id = None
 
             for line in file:
@@ -33,12 +37,17 @@ class Parser:
                         self.documents_processed += 1
                         print(f"{self.documents_processed} documents processed")
                     else:
-                        self._process_line(document_id, line)
+                        self.__process_line(document_id, line)
 
         print(f"Finished processing {self.dataset_name}\n")
 
-    def _process_line(self, document_id: int, line: str):
-        """Process a single line in a text file."""
+    def __process_line(self, document_id: int, line: str):
+        """Process a single line in a text file.
+
+        :param document_id: The ID of the document being processed
+        :param line: The line to be processed
+        :return: None
+        """
         # Strip whitespace from ends of lines
         stripped_line = line.strip()
 
@@ -50,7 +59,7 @@ class Parser:
         words = re.split("\s|-|/|,|\.|\(|\)", decoded_line)
 
         for word in words:
-            processed_word = self._process_word(word)
+            processed_word = self.__process_word(word)
             if not processed_word or processed_word is None or processed_word.isspace():
                 continue
 
@@ -58,8 +67,12 @@ class Parser:
             self.index.add_word(document_id, processed_word)
 
     @staticmethod
-    def _process_word(word: str):
-        """Removes punctuation and converts a word to lowercase."""
+    def __process_word(word: str):
+        """Removes punctuation and converts a word to lowercase.
+
+        :param word: The word to be processed
+        :return: The processed word
+        """
         stripped_word = word.strip()
         return stripped_word.translate(str.maketrans('', '', string.punctuation)).lower()
 
