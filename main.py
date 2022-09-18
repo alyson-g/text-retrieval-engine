@@ -1,14 +1,20 @@
-from parser import Parser
+from indexer import Indexer
+from inverted_index import InvertedIndex
 
 
 def main():
     for dataset_name in ["yelp", "headlines"]:
-        document_path = f"./sample_data/{dataset_name}.txt"
-        parser = Parser(document_path, dataset_name)
+        dataset_path = f"./sample_data/{dataset_name}.txt"
+        index = InvertedIndex()
 
-        parser.calculate_metrics()
-        parser.find_singleton_words()
-        parser.find_frequencies()
+        indexer = Indexer(dataset_path, dataset_name, index)
+        indexer.load_data()
+
+        lexicon_file, inverted_file = index.generate_file(dataset_name)
+
+        indexer.calculate_metrics()
+        indexer.find_singleton_words()
+        indexer.find_frequencies()
 
 
 if __name__ == '__main__':

@@ -1,27 +1,37 @@
 import re
-import string
 
 import numpy as np
 import pandas as pd
 
 from inverted_index import InvertedIndex
+from utils import process_word
 
 
-class Parser:
+class Indexer:
     """This class is intended to be used to parse text data."""
-    def __init__(self, document_path: str, dataset_name: str):
-        self.index = InvertedIndex()
+    def __init__(
+            self,
+            dataset_path: str,
+            dataset_name: str,
+            index: InvertedIndex
+    ) -> None:
+        """Initialize the Indexer instance.
+
+        :param dataset_path: The path to the dataset file
+        :param dataset_name: The name of the dataset
+        :param index: The inverted index that will be populated
+        """
+        self.index = index
         self.documents_processed = 0
         self.words_processed = 0
+        self.dataset_path = dataset_path
         self.dataset_name = dataset_name
 
-        self._load_data(document_path)
-
-    def _load_data(self, document_path: str):
+    def load_data(self) -> None:
         """Load data from a text file."""
         print(f"Starting {self.dataset_name} processing...")
 
-        with open(document_path, "r") as file:
+        with open(self.dataset_path, "r") as file:
             document_id = None
 
             for line in file:
@@ -33,12 +43,17 @@ class Parser:
                         self.documents_processed += 1
                         print(f"{self.documents_processed} documents processed")
                     else:
-                        self._process_line(document_id, line)
+                        self.__process_line(document_id, line)
 
         print(f"Finished processing {self.dataset_name}\n")
 
-    def _process_line(self, document_id: int, line: str):
-        """Process a single line in a text file."""
+    def __process_line(self, document_id: int, line: str) -> None:
+        """Process a single line in a text file.
+
+        :param document_id: The ID of the document being processed
+        :param line: The line to be processed
+        :return: None
+        """
         # Strip whitespace from ends of lines
         stripped_line = line.strip()
 
@@ -50,20 +65,14 @@ class Parser:
         words = re.split("\s|-|/|,|\.|\(|\)", decoded_line)
 
         for word in words:
-            processed_word = self._process_word(word)
+            processed_word = process_word(word)
             if not processed_word or processed_word is None or processed_word.isspace():
                 continue
 
             self.words_processed += 1
             self.index.add_word(document_id, processed_word)
 
-    @staticmethod
-    def _process_word(word: str):
-        """Removes punctuation and converts a word to lowercase."""
-        stripped_word = word.strip()
-        return stripped_word.translate(str.maketrans('', '', string.punctuation)).lower()
-
-    def calculate_metrics(self):
+    def calculate_metrics(self) -> None:
         """Calculate metrics for reporting purposes."""
         unique_words = len(list(self.index.index.keys()))
 
@@ -72,7 +81,7 @@ class Parser:
             file.write(f"Collection Size: {self.words_processed}\n")
             file.write(f"Vocabulary Size: {unique_words}\n")
 
-    def find_singleton_words(self):
+    def find_singleton_words(self) -> None:
         """Find words that only appear in the corpus once."""
         words = list(self.index.index.keys())
 
@@ -90,7 +99,7 @@ class Parser:
             file.write("List of singletons:\n")
             file.writelines(", ".join(singletons))
 
-    def find_frequencies(self):
+    def find_frequencies(self) -> None:
         """Find the collection and document frequency of each word."""
         words = list(self.index.index.keys())
 
