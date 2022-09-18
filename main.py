@@ -8,6 +8,9 @@ def main():
         index = InvertedIndex()
 
         indexer = Indexer(dataset_path, dataset_name, index)
+        indexer.load_data()
+
+        lexicon_file, inverted_file = index.generate_file(dataset_name)
 
         indexer.calculate_metrics()
         indexer.find_singleton_words()

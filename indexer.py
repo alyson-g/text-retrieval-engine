@@ -1,10 +1,10 @@
 import re
-import string
 
 import numpy as np
 import pandas as pd
 
 from inverted_index import InvertedIndex
+from utils import process_word
 
 
 class Indexer:
@@ -24,19 +24,14 @@ class Indexer:
         self.index = index
         self.documents_processed = 0
         self.words_processed = 0
+        self.dataset_path = dataset_path
         self.dataset_name = dataset_name
 
-        self.__load_data(dataset_path)
-
-    def __load_data(self, dataset_path: str) -> None:
-        """Load data from a text file.
-
-        :param dataset_path: The path to the dataset file
-        :return: None
-        """
+    def load_data(self) -> None:
+        """Load data from a text file."""
         print(f"Starting {self.dataset_name} processing...")
 
-        with open(dataset_path, "r") as file:
+        with open(self.dataset_path, "r") as file:
             document_id = None
 
             for line in file:
@@ -70,22 +65,12 @@ class Indexer:
         words = re.split("\s|-|/|,|\.|\(|\)", decoded_line)
 
         for word in words:
-            processed_word = self.__process_word(word)
+            processed_word = process_word(word)
             if not processed_word or processed_word is None or processed_word.isspace():
                 continue
 
             self.words_processed += 1
             self.index.add_word(document_id, processed_word)
-
-    @staticmethod
-    def __process_word(word: str) -> str:
-        """Removes punctuation and converts a word to lowercase.
-
-        :param word: The word to be processed
-        :return: The processed word
-        """
-        stripped_word = word.strip()
-        return stripped_word.translate(str.maketrans('', '', string.punctuation)).lower()
 
     def calculate_metrics(self) -> None:
         """Calculate metrics for reporting purposes."""
