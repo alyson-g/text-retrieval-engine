@@ -3,7 +3,7 @@ from typing import Dict, List, Tuple
 
 import pandas as pd
 
-from utils import process_word
+from processor import Processor
 
 
 class InvertedIndex:
@@ -109,6 +109,7 @@ class InvertedIndex:
             lexicon_file: str,
             index_file: str,
             terms: List[str],
+            processor: Processor,
             byte_order: str = "big"
     ) -> Dict[str, pd.DataFrame]:
         """Extract information about a term or terms.
@@ -118,6 +119,7 @@ class InvertedIndex:
         :param terms: A list of terms to extract information about
         :param byte_order: The ordering of the bytes used within the inverted file
             (either big or little)
+        :param processor: The document processor object
         :return: A dictionary of terms as keys and DataFrames of document IDs and their
             term frequencies as values
         """
@@ -127,7 +129,7 @@ class InvertedIndex:
 
         for term in terms:
             # Term must be preprocessed to look up in the index
-            processed_word = process_word(term)
+            processed_word = processor.process_token(term)
 
             # These variables are used to generate summary DataFrames for each term
             doc_ids = []

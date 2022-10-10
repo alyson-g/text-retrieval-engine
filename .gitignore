@@ -215,3 +215,6 @@ output_reports/
 
 # Jupyter notebook folder
 notebooks/
+
+# Large sample data sets
+sample_data/cord19.*

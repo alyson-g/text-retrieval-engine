@@ -1,37 +1,38 @@
-import re
-
 import numpy as np
 import pandas as pd
 
 from inverted_index import InvertedIndex
-from utils import process_word
+from processor import Processor
 
 
 class Indexer:
-    """This class is intended to be used to parse text data."""
+    """Parses text data and constructs an inverted index."""
     def __init__(
             self,
             dataset_path: str,
             dataset_name: str,
-            index: InvertedIndex
+            processor: Processor,
+            index: InvertedIndex,
     ) -> None:
         """Initialize the Indexer instance.
 
         :param dataset_path: The path to the dataset file
         :param dataset_name: The name of the dataset
         :param index: The inverted index that will be populated
+        :param processor: The document processor object
         """
         self.index = index
         self.documents_processed = 0
         self.words_processed = 0
         self.dataset_path = dataset_path
         self.dataset_name = dataset_name
+        self.processor = processor
 
     def load_data(self) -> None:
         """Load data from a text file."""
         print(f"Starting {self.dataset_name} processing...")
 
-        with open(self.dataset_path, "r") as file:
+        with open(self.dataset_path, "r", encoding="utf-8") as file:
             document_id = None
 
             for line in file:
@@ -54,23 +55,11 @@ class Indexer:
         :param line: The line to be processed
         :return: None
         """
-        # Strip whitespace from ends of lines
-        stripped_line = line.strip()
+        tokens = self.processor.process_line(line)
 
-        # Remove unicode encodings
-        encoded_line = stripped_line.encode("ascii", "ignore")
-        decoded_line = encoded_line.decode()
-
-        # Split words on common punctuation
-        words = re.split("\s|-|/|,|\.|\(|\)", decoded_line)
-
-        for word in words:
-            processed_word = process_word(word)
-            if not processed_word or processed_word is None or processed_word.isspace():
-                continue
-
+        for token in tokens:
             self.words_processed += 1
-            self.index.add_word(document_id, processed_word)
+            self.index.add_word(document_id, token)
 
     def calculate_metrics(self) -> None:
         """Calculate metrics for reporting purposes."""
