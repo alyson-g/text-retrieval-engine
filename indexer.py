@@ -3,6 +3,7 @@ import pandas as pd
 
 from inverted_index import InvertedIndex
 from processor import Processor
+from utils import yield_sgml_text
 
 
 class Indexer:
@@ -32,19 +33,11 @@ class Indexer:
         """Load data from a text file."""
         print(f"Starting {self.dataset_name} processing...")
 
-        with open(self.dataset_path, "r", encoding="utf-8") as file:
-            document_id = None
-
-            for line in file:
-                if not line.isspace():
-                    if line.startswith("<P"):
-                        document_id = int(line.replace("<P ID=", "").replace(">", ""))
-                    elif "</P>" in line:
-                        document_id = None
-                        self.documents_processed += 1
-                        print(f"{self.documents_processed} documents processed")
-                    else:
-                        self.__process_line(document_id, line)
+        for document_id, text in yield_sgml_text(self.dataset_path):
+            self.__process_line(document_id, text)
+            self.documents_processed += 1
+            self.index.num_docs += 1
+            print(f"{self.documents_processed} documents processed")
 
         print(f"Finished processing {self.dataset_name}\n")
 
