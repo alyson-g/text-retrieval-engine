@@ -1,11 +1,15 @@
 from collections import Counter
 from datetime import datetime
+import logging_tools
 from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
 
 from processor import Processor
+
+
+logger = logging_tools.getLogger(__name__)
 
 
 class InvertedIndex:
@@ -166,7 +170,7 @@ class InvertedIndex:
             row = lexicon[lexicon["term"] == processed_word]
 
             if row.shape[0] == 0:
-                print(f"The term '{term}' was not found in the index")
+                logging_tools.info(f"The term '{term}' was not found in the index")
                 continue
 
             next_row = lexicon.loc[row.index + 1]
@@ -223,7 +227,7 @@ class InvertedIndex:
             row = lexicon[lexicon["term"] == term]
 
             if row.shape[0] == 0:
-                print(f"The term '{term}' was not found in the index")
+                logging_tools.info(f"The term '{term}' was not found in the index")
                 continue
 
             next_row = lexicon.loc[row.index + 1]
@@ -294,7 +298,7 @@ class InvertedIndex:
 
         if verbose:
             query_df = pd.DataFrame(zip(query_terms, query_tf_idf), columns=["term", "tf_idf_weight"])
-            print(query_df)
+            logging_tools.info(query_df)
 
         # Calculate query vector length
         query_length = np.linalg.norm(query_tf_idf)

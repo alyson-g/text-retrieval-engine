@@ -1,9 +1,14 @@
+import logging_tools
+
 import numpy as np
 import pandas as pd
 
 from inverted_index import InvertedIndex
 from processor import Processor
-from utils import yield_sgml_text
+from utils.doc_processing import yield_sgml_text
+
+
+logger = logging_tools.getLogger(__name__)
 
 
 class Indexer:
@@ -31,15 +36,15 @@ class Indexer:
 
     def load_data(self) -> None:
         """Load data from a text file."""
-        print(f"Starting {self.dataset_name} processing...")
+        logger.info(f"Starting {self.dataset_name} processing...")
 
         for document_id, text in yield_sgml_text(self.dataset_path):
             self.__process_line(document_id, text)
             self.documents_processed += 1
             self.index.num_docs += 1
-            print(f"{self.documents_processed} documents processed")
+            logger.info(f"{self.documents_processed} documents processed")
 
-        print(f"Finished processing {self.dataset_name}\n")
+        logger.info(f"Finished processing {self.dataset_name}\n")
 
     def __process_line(self, document_id: int, line: str) -> None:
         """Process a single line in a text file.
