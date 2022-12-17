@@ -1,6 +1,6 @@
 from collections import Counter
 from datetime import datetime
-import logging_tools
+import logging
 from typing import Dict, List, Tuple
 
 import numpy as np
@@ -9,7 +9,7 @@ import pandas as pd
 from processor import Processor
 
 
-logger = logging_tools.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class InvertedIndex:
