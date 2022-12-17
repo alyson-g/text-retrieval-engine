@@ -1,8 +1,8 @@
 import time
 
-from indexer import Indexer
-from inverted_index import InvertedIndex
-from processor import Processor
+from index.indexer import Indexer
+from index.inverted_index import InvertedIndex
+from index.processor import Processor
 
 
 def main():
