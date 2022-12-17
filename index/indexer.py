@@ -1,4 +1,4 @@
-import logging_tools
+import logging
 
 import numpy as np
 import pandas as pd
@@ -8,7 +8,7 @@ from processor import Processor
 from utils.doc_processing import yield_sgml_text
 
 
-logger = logging_tools.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Indexer:
