@@ -52,17 +52,13 @@ class InvertedIndex:
         """
         postings_list = {"size": 1, document_id: 1}
 
-        self.index[word] = {
-            "count": 1,
-            "num_docs": 1,
-            "postings_list": postings_list
-        }
+        self.index[word] = {"count": 1, "num_docs": 1, "postings_list": postings_list}
         self.num_terms += 1
 
     def generate_file(
-            self,
-            dataset_name: str,
-            byte_order: str = "big",
+        self,
+        dataset_name: str,
+        byte_order: str = "big",
     ) -> Tuple[str, str, str]:
         """Generate lexicon and inverted files.
 
@@ -81,7 +77,7 @@ class InvertedIndex:
         idfs = []
 
         # These variables will be used to generate the document vector length file
-        doc_vector_lengths = np.zeros((self.num_docs, ))
+        doc_vector_lengths = np.zeros((self.num_docs,))
 
         lexicon_file = f"./output_reports/{dataset_name}_lexicon_{now_str}.csv"
         inverted_file = f"./output_reports/{dataset_name}_index_{now_str}.bin"
@@ -121,13 +117,13 @@ class InvertedIndex:
 
         doc_lengths_df = pd.DataFrame(
             zip(list(range(1, self.num_docs + 1)), doc_vector_lengths),
-            columns=["doc_id", "euclidean_length"]
+            columns=["doc_id", "euclidean_length"],
         )
         doc_lengths_df.to_csv(document_length_file, index=False)
 
         df = pd.DataFrame(
             zip(terms, doc_frequencies, idfs, offsets),
-            columns=["term", "document_frequency", "inverse_document_frequency", "offset"]
+            columns=["term", "document_frequency", "inverse_document_frequency", "offset"],
         )
         df.to_csv(lexicon_file, index=False)
 
@@ -135,11 +131,11 @@ class InvertedIndex:
 
     @staticmethod
     def extract_information(
-            lexicon_file: str,
-            index_file: str,
-            terms: List[str],
-            processor: Processor,
-            byte_order: str = "big"
+        lexicon_file: str,
+        index_file: str,
+        terms: List[str],
+        processor: Processor,
+        byte_order: str = "big",
     ) -> Dict[str, pd.DataFrame]:
         """Extract information about a term or terms.
 
@@ -198,11 +194,11 @@ class InvertedIndex:
 
     @staticmethod
     def tf_idf(
-            lexicon_file: str,
-            index_file: str,
-            query_terms: List[str],
-            num_docs: int,
-            byte_order: str = "big"
+        lexicon_file: str,
+        index_file: str,
+        query_terms: List[str],
+        num_docs: int,
+        byte_order: str = "big",
     ) -> Tuple[np.array, np.array]:
         """Calculate the tf-idf matrix for a given set of documents and query terms.
 
@@ -257,13 +253,13 @@ class InvertedIndex:
         return tf_idfs, idfs
 
     def cosine_similarity(
-            self,
-            lexicon_file: str,
-            index_file: str,
-            doc_length_file: str,
-            query: List[str],
-            byte_order: str = "big",
-            verbose: bool = False
+        self,
+        lexicon_file: str,
+        index_file: str,
+        doc_length_file: str,
+        query: List[str],
+        byte_order: str = "big",
+        verbose: bool = False,
     ) -> pd.DataFrame:
         """Calculate cosine similarity.
 
@@ -294,10 +290,12 @@ class InvertedIndex:
         # Calculate query tf-idf
         query_tf_idf = np.array(list(query_counter.values())).reshape((num_terms, 1))
         query_tf_idf = idfs.T * query_tf_idf
-        query_tf_idf = query_tf_idf.reshape((num_terms, ))
+        query_tf_idf = query_tf_idf.reshape((num_terms,))
 
         if verbose:
-            query_df = pd.DataFrame(zip(query_terms, query_tf_idf), columns=["term", "tf_idf_weight"])
+            query_df = pd.DataFrame(
+                zip(query_terms, query_tf_idf), columns=["term", "tf_idf_weight"]
+            )
             logging_tools.info(query_df)
 
         # Calculate query vector length

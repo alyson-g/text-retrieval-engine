@@ -9,6 +9,7 @@ from nltk.tokenize import word_tokenize
 
 class Processor:
     """Processes text using either simple processing methods or nltk."""
+
     def __init__(self, use_nltk: bool = True):
         self.use_nltk = use_nltk
 
@@ -46,7 +47,7 @@ class Processor:
         :return: The processed token
         """
         stripped_token = token.strip()
-        return stripped_token.translate(str.maketrans('', '', string.punctuation)).lower()
+        return stripped_token.translate(str.maketrans("", "", string.punctuation)).lower()
 
     def __simple_process_line(self, line: str) -> List[str]:
         """Process a line of text using simple tokenization methods.
@@ -103,7 +104,7 @@ class Processor:
             stemmed_token = self.stemmer.stem(token)
 
             # Remove non-words
-            if not re.match('\W?\w+', stemmed_token):
+            if not re.match("\W?\w+", stemmed_token):
                 continue
 
             clean_tokens.append(stemmed_token)

@@ -13,12 +13,13 @@ logger = logging.getLogger(__name__)
 
 class Indexer:
     """Parses text data and constructs an inverted index."""
+
     def __init__(
-            self,
-            dataset_path: str,
-            dataset_name: str,
-            processor: Processor,
-            index: InvertedIndex,
+        self,
+        dataset_path: str,
+        dataset_name: str,
+        processor: Processor,
+        index: InvertedIndex,
     ) -> None:
         """Initialize the Indexer instance.
 
@@ -105,14 +106,11 @@ class Indexer:
         # Put the most frequent words in a DataFrame to make it easy to print
         df = pd.DataFrame(
             zip(sorted_words, sorted_counts, sorted_doc_counts),
-            columns=["word", "collection_frequency", "document_frequency"]
+            columns=["word", "collection_frequency", "document_frequency"],
         )
 
         df.sort_values(by="collection_frequency", inplace=True, ascending=False)
         df.reset_index(inplace=True, drop=True)
         df.index += 1
 
-        df.to_csv(
-            f"./output_reports/{self.dataset_name}_frequency_report.csv",
-            index_label="rank"
-        )
+        df.to_csv(f"./output_reports/{self.dataset_name}_frequency_report.csv", index_label="rank")

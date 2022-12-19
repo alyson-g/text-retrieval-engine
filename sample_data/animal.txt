@@ -71,5 +71,3 @@ bird
 bird
 bird
 </P>
-
-

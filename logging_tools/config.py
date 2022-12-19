@@ -18,8 +18,8 @@ def setup_logging():
 
 def add_handler(logger: logging.Logger, log_level: str):
     """Adds a handler to the provided logger."""
-    log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    date_format = '%Y-%m-%d %H:%M:%S'
+    log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    date_format = "%Y-%m-%d %H:%M:%S"
     formatter = logging.Formatter(log_format, date_format)
 
     console_handler = logging.StreamHandler()
