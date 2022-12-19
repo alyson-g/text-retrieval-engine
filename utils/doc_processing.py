@@ -15,7 +15,9 @@ def yield_sgml_text(file_name: str) -> Tuple[int, str]:
         for line in file:
             if not line.isspace():
                 if line.startswith("<P") or line.startswith("<Q"):
-                    document_id = int(line.replace("<P ID=", "").replace("<Q ID=", "").replace(">", ""))
+                    document_id = int(
+                        line.replace("<P ID=", "").replace("<Q ID=", "").replace(">", "")
+                    )
                 elif "</P>" in line or "</Q>" in line:
                     yield document_id, text
                     document_id = None

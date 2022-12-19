@@ -27,4 +27,3 @@ class TestConfig(fake_filesystem_unittest.TestCase):
         child_modules = config.find_child_modules(Path(self.fs.cwd))
 
         self.assertListEqual(expected, child_modules)
-
